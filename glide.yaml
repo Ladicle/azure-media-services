@@ -1,0 +1,3 @@
+package: github.com/Ladicle/azure-media-services
+import:
+- package: github.com/dgrijalva/jwt-go

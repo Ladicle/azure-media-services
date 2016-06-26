@@ -11,13 +11,15 @@ import (
 
 const CONTENT_KEY_ID = "urn:microsoft:azure:mediaservices:contentkeyidentifier"
 
+// Return AES token
 func GenerteTestToken(template *template.TokenRestrictionTemplate, tokenKey string, expiration time.Time) string {
 
-	t := jwt.New(jwt.SigningMethodHS256)
-	t.Claims[CONTENT_KEY_ID] = tokenKey[len("nb:kid:UUID:"):]
-	t.Claims["iss"] = template.Issuer
-	t.Claims["aud"] = template.Audience
-	t.Claims["exp"] = strconv.FormatInt(expiration.Unix(), 10)
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		CONTENT_KEY_ID: tokenKey[len("nb:kid:UUID:"):],
+		"iss": template.Issuer,
+		"aud": template.Audience,
+		"exp": strconv.FormatInt(expiration.Unix(), 10),
+	})
 
 	token, err := t.SignedString(template.PrimaryVerificationKey.DescerializeKey())
 	if err != nil {
